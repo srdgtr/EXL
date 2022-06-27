@@ -94,6 +94,7 @@ exl_info_db = exl_info[
         "product_title",
         "lange_omschrijving",
         "verpakings_eenheid",
+        "lk"
     ]
 ]
 
