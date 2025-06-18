@@ -29,13 +29,13 @@ voorraad = pd.read_csv(
 
 voorraad_info = (
     pd.merge(producten, voorraad, on="ean", how="left")
-    .assign(
-        stock=lambda x: x["stock1"].fillna(x["stock"]).fillna(0),
+    .assign(stock = lambda x: pd.to_numeric(x["stock1"], errors='coerce').fillna(pd.to_numeric(x["stock"], errors='coerce')).fillna(0),
         ean=lambda x: x["ean"].fillna("").str.split('.').str[0],
         eigen_sku=lambda x: scraper_name + x["sku"],
         lk=lambda x: (korting_percent * x["price"] / 100).round(2),
         price=lambda x: (x["price"] - x["lk"]).round(2),
     )
+    .query("normal_price > 0.01")
     .drop(columns="stock1")
 )
 

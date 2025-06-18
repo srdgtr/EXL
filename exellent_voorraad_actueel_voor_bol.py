@@ -55,19 +55,17 @@ def process_xml(verkrijgen_actuele_voorraad_excellent):
     huidige_voorraad_excellent = pd.DataFrame(huidige_voorraad_excellent, columns=dfcols_stock)
     huidige_voorraad_excellent = huidige_voorraad_excellent.map(
         lambda x: x if not isinstance(x, list) else x[0] if len(x) else ""
-    )
+    ).assign(sku=lambda x: x["sku"].str.strip())
     return huidige_voorraad_excellent
 
 
 voorraad_excellent = process_xml(verkrijgen_actuele_voorraad_excellent)
 
-
 voorraad_excellent = voorraad_excellent.assign(
-    stock=lambda x: np.where(
-        pd.to_numeric(x["stock"], errors="coerce") > 6, 6, x["stock"]
-    ),  # om riciso te beperken max 6
+    stock=lambda x: pd.to_numeric(x["stock"], errors='coerce').clip(upper=15).astype(int),
     sku=scraper_name + voorraad_excellent["sku"].astype(str),
 )
+
 date_now = datetime.now().strftime("%c").replace(":", "-")
 
 act_path = Path.home() / scraper_name / "actueel"

@@ -5,7 +5,7 @@
 from zeep import Client
 import lxml.etree as et
 import pandas as pd
-import numpy as np
+# import numpy as np
 from datetime import datetime
 import configparser
 from pathlib import Path
@@ -51,7 +51,5 @@ def process_xml(verkrijgen_actuele_voorraad_excellent):
 
 voorraad_excellent = process_xml(verkrijgen_actuele_voorraad_excellent)
 
-voorraad_excellent["stock1"] = np.where(
-    voorraad_excellent["stock1"] > 6, 6, voorraad_excellent["stock1"]
-)  # om riciso te beperken max 6
+voorraad_excellent["stock1"] = voorraad_excellent["stock1"].clip(upper=15) # om riciso te beperken max 15
 voorraad_excellent.to_csv(Path.cwd() / f"EXL_stock_{date_now}.csv", index=False)
