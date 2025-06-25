@@ -172,7 +172,7 @@ result_all.dropna(subset=["end_date_promo"]).to_csv(f"{scraper_name}_{date_now}_
 
 price_info = (
     result_all.query("promo_active == 'yes'")
-    .assign(-
+    .assign(
         price_difference=lambda x: x["normal_price"] - x["promo_price"],
         percentage_difference=lambda x: ((x["price_difference"] / x["normal_price"]) * 100).round(2),
     )
